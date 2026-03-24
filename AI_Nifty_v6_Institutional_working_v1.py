@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_autorefresh import st_autorefresh  # ← NEW!
 import yfinance as yf
 import pandas as pd
 import plotly.graph_objects as go
@@ -938,19 +937,21 @@ except Exception as e:
     st.info(f"Install: `pip install kiteconnect==5.0.1`\nError: {e}")
             
 
-# ── AUTO REFRESH (CORRECT ORDER) ────────────────────────────────────────────────
+# ── AUTO REFRESH (STREAMLIT CLOUD SAFE) ─────────────────────────────────────────
 st.sidebar.markdown("---")
-#refresh_sec = st.sidebar.slider("Refresh (seconds)", 10, 60, 25)
-refresh_sec = st.sidebar.slider("Refresh (sec)", 10, 60, 30)
-auto_refresh(refresh_sec)
-auto_on = st.sidebar.toggle("Auto Refresh", True)
 
-if st.sidebar.button("🔄 Refresh Now") or st.button("🔄 Refresh Now", key="manual"):
+# Native auto-refresh (no packages needed)
+auto_on = st.sidebar.toggle("🔄 Auto Refresh", True)
+refresh_sec = st.sidebar.slider("Interval (sec)", 15, 60, 30)
+
+if auto_on:
+    st.rerun()  # Refreshes every page load
+
+# Manual refresh buttons
+if st.sidebar.button("🔄 Refresh Now", key="sidebar_refresh"):
     st.rerun()
-
-# This MUST be after the slider — it reads refresh_sec
-#if auto_on:
-    st_autorefresh(interval=refresh_sec * 1000, key="nifty_auto")
+if st.button("🔄 Refresh Chart", key="manual_refresh"):
+    st.rerun()
     
     
     
